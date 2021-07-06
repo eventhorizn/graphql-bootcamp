@@ -1,1 +1,1 @@
-# graphql-bootcamp
+# GraphQL
