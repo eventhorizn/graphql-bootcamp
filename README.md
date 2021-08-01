@@ -8,6 +8,7 @@
 1. Fewer http requests
     - Flexible data querying
     - Less code to manage...
+1. GraphQL is self documenting
 
 ## What is a Graph
 
