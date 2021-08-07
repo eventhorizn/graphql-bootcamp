@@ -103,6 +103,52 @@ const resolvers = {
 };
 ```
 
+### Custom Types
+
+1. Structured similarly to the Query
+1. You define the properties the type should have
+
+```js
+const typeDefs = `
+    type Query {
+        me: User!
+    }
+
+    type User {
+        id: ID!
+        name: String!
+        email: String!
+        age: Int
+    }
+`;
+
+// Resolvers
+const resolvers = {
+	Query: {
+		me() {
+			return {
+				id: '123098',
+				name: 'Gary',
+				email: 'gary@example.com',
+				age: 32,
+			};
+		},
+	},
+};
+```
+
+Querying
+
+```graphql
+query {
+	me {
+		id
+		name
+		email
+	}
+}
+```
+
 ## Setup
 
 1. Install [babel](https://babeljs.io/)
