@@ -18,3 +18,58 @@
 
 [Instructor demo site](graphql-demo.mead.io) for graphql queries
 - We will be building our own api and client
+
+### Simple Query
+
+```graphql
+query {
+  hello
+  course
+  courseInstructor
+}
+```
+
+### Nested Query
+
+An object
+
+```graphql
+query {
+  hello
+  course
+  courseInstructor
+  me {
+    id
+    name
+    email
+  }
+}
+```
+
+An array of values
+
+```graphql
+query {
+  users {
+    name
+    email
+  }
+}
+```
+
+## Setup
+
+1. Install [babel](https://babeljs.io/)
+    - Javascript compiler
+    - Allows use of modern js, but allows code to run in all browsers
+    ```
+    npm install babel-cli babel-preset-env
+    ```
+    - Create a .babelrc config file
+    ```
+    {
+        "presets": [
+            "env"
+        ]
+    }
+    ```
