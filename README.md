@@ -60,6 +60,49 @@ query {
 }
 ```
 
+## GraphQL Types
+
+### Scalar Types
+
+1. String
+1. Boolean
+1. Int
+1. Float
+1. ID
+
+```js
+const typeDefs = `
+    type Query {
+        title: String!
+        price: Float!
+        releaseYear: Int
+        rating: Float
+        inStock: Boolean!
+    }
+`;
+
+// Resolvers
+const resolvers = {
+	Query: {
+		title() {
+			return 'The War of Art';
+		},
+		price() {
+			return 12.99;
+		},
+		releaseYear() {
+			return;
+		},
+		rating() {
+			return 5;
+		},
+		inStock() {
+			return true;
+		},
+	},
+};
+```
+
 ## Setup
 
 1. Install [babel](https://babeljs.io/)
@@ -83,3 +126,8 @@ query {
    - [Documentation](https://github.com/dotansimha/graphql-yoga)
    - This package is fully featured, and easy to use
    - The sweet 'playground' is a feature of graphql-yoga
+1. Live Reload for GraphQL-Yoga
+   - Using nodemon
+   ```
+   npm install nodemon --save-dev
+   ```
