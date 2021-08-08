@@ -166,7 +166,7 @@ const resolvers = {
 };
 ```
 
-Querying
+#### Querying
 
 ```graphql
 query {
@@ -175,5 +175,44 @@ query {
 		name
 		email
 	}
+}
+```
+
+### Operation Arguments
+
+- This allows us to create a query that takes in arguments
+
+#### API
+
+```js
+const typeDefs = `
+    type Query {
+        greeting(name: String, position: String): String!
+        add(a: Float!, b: Float!): Float!
+    }  
+`;
+
+const resolvers = {
+	Query: {
+		greeting(parent, args, ctx, info) {
+			if (args.name && args.position) {
+				return `Hello, ${args.name} you are my favorite ${args.position}`;
+			}
+
+			return 'Hello';
+		},
+		add(parent, args, ctx, info) {
+			return args.a + args.b;
+		},
+	},
+};
+```
+
+#### Query
+
+```graphql
+query {
+	greeting(name: "Gary", position: "Programmer")
+	add(a: 12, b: 12)
 }
 ```
