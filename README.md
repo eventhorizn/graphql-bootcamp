@@ -16,6 +16,35 @@
 
 ![](images/graph.png)
 
+## Setup
+
+1. Install [babel](https://babeljs.io/)
+   - Javascript compiler
+   - Allows use of modern js, but allows code to run in all browsers
+   ```
+   npm install babel-cli babel-preset-env
+   ```
+   - Create a .babelrc config file
+   ```
+   {
+       "presets": [
+           "env"
+       ]
+   }
+   ```
+1. Install graphql-yoga
+   ```
+   npm install graphql-yoga
+   ```
+   - [Documentation](https://github.com/dotansimha/graphql-yoga)
+   - This package is fully featured, and easy to use
+   - The sweet 'playground' is a feature of graphql-yoga
+1. Live Reload for GraphQL-Yoga
+   - Using nodemon
+   ```
+   npm install nodemon --save-dev
+   ```
+
 ## GraphQL Queries
 
 [Instructor demo site](graphql-demo.mead.io) for graphql queries
@@ -148,32 +177,3 @@ query {
 	}
 }
 ```
-
-## Setup
-
-1. Install [babel](https://babeljs.io/)
-   - Javascript compiler
-   - Allows use of modern js, but allows code to run in all browsers
-   ```
-   npm install babel-cli babel-preset-env
-   ```
-   - Create a .babelrc config file
-   ```
-   {
-       "presets": [
-           "env"
-       ]
-   }
-   ```
-1. Install graphql-yoga
-   ```
-   npm install graphql-yoga
-   ```
-   - [Documentation](https://github.com/dotansimha/graphql-yoga)
-   - This package is fully featured, and easy to use
-   - The sweet 'playground' is a feature of graphql-yoga
-1. Live Reload for GraphQL-Yoga
-   - Using nodemon
-   ```
-   npm install nodemon --save-dev
-   ```
