@@ -16,7 +16,7 @@
 
 ![](images/graph.png)
 
-## Setup
+# Setup
 
 1. Install [babel](https://babeljs.io/)
    - Javascript compiler
@@ -45,13 +45,13 @@
    npm install nodemon --save-dev
    ```
 
-## GraphQL Queries
+# GraphQL Queries
 
 [Instructor demo site](graphql-demo.mead.io) for graphql queries
 
 - We will be building our own api and client
 
-### Simple Query
+## Simple Query
 
 ```graphql
 query {
@@ -61,7 +61,7 @@ query {
 }
 ```
 
-### Nested Query
+## Nested Query
 
 An object
 
@@ -89,9 +89,9 @@ query {
 }
 ```
 
-## GraphQL Types
+# GraphQL Types
 
-### Scalar Types
+## Scalar Types
 
 1. String
 1. Boolean
@@ -132,7 +132,7 @@ const resolvers = {
 };
 ```
 
-### Custom Types
+## Custom Types
 
 1. Structured similarly to the Query
 1. You define the properties the type should have
@@ -166,8 +166,6 @@ const resolvers = {
 };
 ```
 
-#### Querying
-
 ```graphql
 query {
 	me {
@@ -178,11 +176,9 @@ query {
 }
 ```
 
-### Operation Arguments
+# Operation Arguments
 
 - This allows us to create a query that takes in arguments
-
-#### API
 
 ```js
 const typeDefs = `
@@ -208,11 +204,91 @@ const resolvers = {
 };
 ```
 
-#### Query
+- Notice that we have a bunch of arguments in the resolver function
+- Even if you don't use them all, it's a good habit to include all of them
 
 ```graphql
 query {
 	greeting(name: "Gary", position: "Programmer")
 	add(a: 12, b: 12)
+}
+```
+
+# Arrays
+
+## Scalar Types
+
+```js
+const typeDefs = `
+    type Query {
+        add(numbers: [Float!]!): Float!
+        grades: [Int!]!
+    }  
+`;
+
+const resolvers = {
+	Query: {
+		add(parent, args, ctx, info) {
+			if (args.numbers.length === 0) {
+				return 0;
+			}
+
+			return args.numbers.reduce((acc, cur) => {
+				return acc + cur;
+			});
+		},
+		grades(parent, args, ctx, info) {
+			return [99, 80, 93];
+		},
+	},
+};
+```
+
+```graphql
+query {
+	grades
+	add(numbers: [1, 2, 3, 4])
+}
+```
+
+## Custom Types
+
+```js
+const typeDefs = `
+    type Query {
+        users(query: String): [User!]!
+    }
+
+    type User {
+        id: ID!
+        name: String!
+        email: String!
+        age: Int
+    }  
+`;
+
+const resolvers = {
+	Query: {
+		users(parent, args, ctx, info) {
+			if (!args.query) {
+				return users;
+			}
+
+			return users.filter((user) => {
+				return user.name.toLowerCase().includes(args.query.toLowerCase());
+			});
+		},
+	},
+};
+```
+
+```graphql
+query {
+	users(query: "A") {
+		id
+		name
+		email
+		age
+	}
 }
 ```
