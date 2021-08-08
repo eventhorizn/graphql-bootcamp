@@ -292,3 +292,107 @@ query {
 	}
 }
 ```
+
+# Relational Data
+
+## Basics
+
+- We are linking a Post to an Author
+- The idea is that a post will have a user id field
+- We create a resolver function (similar to Query)
+  - This will return our user when we query a Post
+
+```js
+const typeDefs = `
+    type Query {
+        users(query: String): [User!]!
+        posts(query: String): [Post!]!
+        me: User!
+        post: Post!
+    }
+
+    type User {
+        id: ID!
+        name: String!
+        email: String!
+        age: Int
+    }
+
+    type Post {
+        id: ID!
+        title: String!
+        body: String!
+        published: Boolean!
+        author: User!
+    }
+`;
+
+const resolvers = {
+	Query: {
+		users(parent, args, ctx, info) {
+			if (!args.query) {
+				return users;
+			}
+
+			return users.filter((user) => {
+				return user.name.toLowerCase().includes(args.query.toLowerCase());
+			});
+		},
+		posts(parent, args, ctx, info) {
+			if (!args.query) {
+				return posts;
+			}
+
+			return posts.filter((post) => {
+				const isTitleMatch = post.title
+					.toLowerCase()
+					.includes(args.query.toLowerCase());
+				const isBodyMatch = post.body
+					.toLowerCase()
+					.includes(args.query.toLowerCase());
+
+				return isTitleMatch || isBodyMatch;
+			});
+		},
+		me() {
+			return {
+				id: '123098',
+				name: 'Gary',
+				email: 'gary@example.com',
+				age: 32,
+			};
+		},
+		post() {
+			return {
+				id: '123009',
+				title: 'Hello',
+				body: 'Hello again',
+				published: true,
+			};
+		},
+	},
+	Post: {
+		author(parent, args, ctx, info) {
+			return users.find((user) => {
+				return user.id === parent.author;
+			});
+		},
+	},
+};
+```
+
+```graphql
+query {
+	posts {
+		id
+		title
+		body
+		published
+		author {
+			name
+		}
+	}
+}
+```
+
+- As you can see, it builds on the Query resolver
