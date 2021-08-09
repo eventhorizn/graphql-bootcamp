@@ -295,10 +295,44 @@ query {
 
 # Relational Data
 
+1. With relational data, we are linking two User defined types together
+1. The big takeaway is that we develop resolvers for our user defined types that will then return the child relationship
+   - Post resolver will return a User that wrote the post
+   - User resolver will return all the Posts a user wrote
+1. It builds off of what is defined in the Query resolver
+   - This resolver will be considered the 'parent'
+   - So, the Query resolver returns a 'users' function (all Users)
+   - The User resolver will then allow us to query for posts
+1. Putting it all together will result in queries that look like this:
+   ```graphql
+   query {
+   	users {
+   		id
+   		name
+   		email
+   		age
+   		posts {
+   			id
+   			title
+   			comments {
+   				text
+   			}
+   		}
+   	}
+   }
+   ```
+   - Relationally, a user has posts, posts have comments
+   - In this case, we could even query for a post in the comments!
+1. Worth noting, GraphQL relationships don't necessarily match database ones!
+   - We add a List of Comments to a Post for GraphQL
+   - Post Id on the Comment table relationally
+
 ## Basics
 
 - We are linking a Post to an Author
+  - Adding an author field to Post
 - The idea is that a post will have a user id field
+  - In the db
 - We create a resolver function (similar to Query)
   - This will return our user when we query a Post
 
@@ -307,8 +341,6 @@ const typeDefs = `
     type Query {
         users(query: String): [User!]!
         posts(query: String): [Post!]!
-        me: User!
-        post: Post!
     }
 
     type User {
@@ -354,22 +386,6 @@ const resolvers = {
 				return isTitleMatch || isBodyMatch;
 			});
 		},
-		me() {
-			return {
-				id: '123098',
-				name: 'Gary',
-				email: 'gary@example.com',
-				age: 32,
-			};
-		},
-		post() {
-			return {
-				id: '123009',
-				title: 'Hello',
-				body: 'Hello again',
-				published: true,
-			};
-		},
 	},
 	Post: {
 		author(parent, args, ctx, info) {
@@ -396,3 +412,89 @@ query {
 ```
 
 - As you can see, it builds on the Query resolver
+- The posts() in the query resolver is the 'parent' parameter
+
+## Arrays
+
+- Really a one to many relationship
+- Added the `posts: [Post!]!`
+- Doing an array filter instead of an array find
+  - Instead of expecting one result, we expect 1 to many
+
+```js
+// Type definitions (schema)
+const typeDefs = `
+    type Query {
+        users(query: String): [User!]!
+        posts(query: String): [Post!]!
+    }
+
+    type User {
+        id: ID!
+        name: String!
+        email: String!
+        age: Int
+        posts: [Post!]!
+    }
+
+    type Post {
+        id: ID!
+        title: String!
+        body: String!
+        published: Boolean!
+        author: User!
+    }
+`;
+
+const resolvers = {
+	Query: {
+		users(parent, args, ctx, info) {
+			if (!args.query) {
+				return users;
+			}
+
+			return users.filter((user) => {
+				return user.name.toLowerCase().includes(args.query.toLowerCase());
+			});
+		},
+		posts(parent, args, ctx, info) {
+			if (!args.query) {
+				return posts;
+			}
+
+			return posts.filter((post) => {
+				const isTitleMatch = post.title
+					.toLowerCase()
+					.includes(args.query.toLowerCase());
+				const isBodyMatch = post.body
+					.toLowerCase()
+					.includes(args.query.toLowerCase());
+
+				return isTitleMatch || isBodyMatch;
+			});
+		},
+	},
+	User: {
+		posts(parent, args, ctx, info) {
+			return posts.filter((post) => {
+				return post.author === parent.id;
+			});
+		},
+	},
+};
+```
+
+```graphql
+query {
+	users {
+		id
+		name
+		email
+		age
+		posts {
+			id
+			title
+		}
+	}
+}
+```
