@@ -293,7 +293,7 @@ query {
 }
 ```
 
-# Relational Data
+# Relational Data and Queries
 
 1. With relational data, we are linking two User defined types together
 1. The big takeaway is that we develop resolvers for our user defined types that will then return the child relationship
@@ -498,3 +498,5 @@ query {
 	}
 }
 ```
+
+# Mutations (Insert, Delete, Update)
