@@ -500,3 +500,70 @@ query {
 ```
 
 # Mutations (Insert, Delete, Update)
+
+1. In order to create data, we need a package to generate ids
+
+   - [uuid](https://www.npmjs.com/package/uuid)
+
+   ```
+   npm install uuid
+   ```
+
+1. In general, mutations work similarly to query in design and function
+
+## Insert
+
+```js
+const typeDefs = `
+    type Mutation {
+        createUser(name: String!, email: String!, age: Int): User!
+    }
+
+    type User {
+        id: ID!
+        name: String!
+        email: String!
+        age: Int
+        posts: [Post!]!
+        comments: [Comment!]!
+    }
+`;
+
+const resolvers = {
+	Mutation: {
+		createUser(parent, args, ctc, info) {
+			const emailTaken = users.some((user) => {
+				return user.email === args.email;
+			});
+
+			if (emailTaken) {
+				throw new Error('Email taken');
+			}
+
+			const user = {
+				id: uuidv4(),
+				name: args.name,
+				email: args.email,
+				age: args.age,
+			};
+
+			users.push(user);
+
+			return user;
+		},
+	},
+};
+```
+
+```graphql
+mutation {
+	createUser(name: "Gary", email: "test@test.com") {
+		id
+		name
+		email
+		age
+	}
+}
+```
+
+### Object Spread Operator
