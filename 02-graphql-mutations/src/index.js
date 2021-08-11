@@ -1,5 +1,5 @@
 import { GraphQLServer } from 'graphql-yoga';
-import uuidv4 from 'uuid/v4';
+import { v4 as uuidv4 } from 'uuid';
 
 // Scalar Types: String, Boolean, Int, Float, ID
 
