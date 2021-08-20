@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 // Scalar Types: String, Boolean, Int, Float, ID
 
 // Demo User data
-const users = [
+let users = [
 	{
 		id: '1',
 		name: 'Gary',
@@ -24,7 +24,7 @@ const users = [
 ];
 
 // Demo Post data
-const posts = [
+let posts = [
 	{
 		id: '1',
 		title: 'Test 1',
@@ -49,7 +49,7 @@ const posts = [
 ];
 
 // Demo Comment data
-const comments = [
+let comments = [
 	{
 		id: '1',
 		text: 'Comment 1',
@@ -113,6 +113,7 @@ const typeDefs = `
 
     type Mutation {
         createUser(input: CreateUserInput!): User!
+		deleteUser(id: ID!): User!
 		createPost(input: CreatePostInput!): Post!
 		createComment(input: CreateCommentInput!): Comment!
     }
@@ -215,14 +216,14 @@ const resolvers = {
 				return user.id === parent.author;
 			});
 		},
-		post(parent, args, ctc, info) {
+		post(parent, args, ctx, info) {
 			return posts.find((post) => {
 				return post.id === parent.post;
 			});
 		},
 	},
 	Mutation: {
-		createUser(parent, args, ctc, info) {
+		createUser(parent, args, ctx, info) {
 			const emailTaken = users.some((user) => {
 				return user.email === args.input.email;
 			});
@@ -240,7 +241,30 @@ const resolvers = {
 
 			return user;
 		},
-		createPost(parent, args, ctc, info) {
+		deleteUser(parent, args, ctx, info) {
+			const userIndex = users.findIndex((user) => user.id === args.id);
+
+			if (userIndex === -1) {
+				throw new Error('User not found');
+			}
+
+			const deletedUsers = users.splice(userIndex, 1);
+
+			posts = posts.filter((post) => {
+				const match = post.author === args.id;
+
+				if (match) {
+					comments = comments.filter((comment) => comment.post !== post.id);
+				}
+
+				return !match;
+			});
+
+			comments = comments.filter((comment) => comment.author !== args.id);
+
+			return deletedUsers[0];
+		},
+		createPost(parent, args, ctx, info) {
 			const userExists = users.some((user) => {
 				return user.id === args.input.author;
 			});
@@ -258,7 +282,7 @@ const resolvers = {
 
 			return post;
 		},
-		createComment(parent, args, ctc, info) {
+		createComment(parent, args, ctx, info) {
 			const userExists = users.some((user) => {
 				return user.id === args.input.author;
 			});
