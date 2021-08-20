@@ -597,3 +597,34 @@ mutation {
    	...args,
    };
    ```
+
+## The Input Type
+
+1. Mutations tend to have lots of inputs
+   ```graphql
+   type Mutation {
+   	createUser(name: String!, email: String!, age: Int): User!
+   	createPost(
+   		title: String!
+   		body: String!
+   		published: Boolean!
+   		author: ID!
+   	): Post!
+   	createComment(text: String!, author: ID!, post: ID!): Comment!
+   }
+   ```
+1. We can define our own input types
+
+   ```graphql
+   type Mutation {
+   	createUser(input: CreateUserInput!): User!
+   }
+
+   input CreateUserInput {
+   	name: String!
+   	email: String!
+   	age: Int
+   }
+   ```
+
+1. temp
