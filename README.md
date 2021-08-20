@@ -567,3 +567,33 @@ mutation {
 ```
 
 ### Object Spread Operator
+
+1. We will be using a module for this
+   - [babel-plugin-transform-object-rest-spread](https://www.npmjs.com/package/babel-plugin-transform-object-rest-spread)
+   ```
+   npm babel-plugin-transform-object-rest-spread
+   ```
+1. Setup plugins in .babelrc
+   ```
+   {
+     "presets": ["env"],
+     "plugins": ["transform-object-rest-spread"]
+   }
+   ```
+1. Use the spread operator
+   - Old
+   ```js
+   const user = {
+   	id: uuidv4(),
+   	name: args.name,
+   	email: args.email,
+   	age: args.age,
+   };
+   ```
+   - New
+   ```js
+   const user = {
+   	id: uuidv4(),
+   	...args,
+   };
+   ```
