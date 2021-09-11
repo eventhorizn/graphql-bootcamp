@@ -44,6 +44,9 @@
    ```
    npm install nodemon --save-dev
    ```
+1. Install GraphQL extension
+   - Allows us to create .graphql files
+   - Syntax highlighting, intellisense, etc...
 
 # GraphQL Queries
 
@@ -626,5 +629,3 @@ mutation {
    	age: Int
    }
    ```
-
-1. temp
