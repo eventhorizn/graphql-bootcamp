@@ -221,14 +221,14 @@ query {
 
 ## Scalar Types
 
-```js
-const typeDefs = `
-    type Query {
-        add(numbers: [Float!]!): Float!
-        grades: [Int!]!
-    }  
-`;
+```graphql
+type Query {
+	add(numbers: [Float!]!): Float!
+	grades: [Int!]!
+}
+```
 
+```js
 const resolvers = {
 	Query: {
 		add(parent, args, ctx, info) {
@@ -256,20 +256,20 @@ query {
 
 ## Custom Types
 
+```graphql
+type Query {
+	users(query: String): [User!]!
+}
+
+type User {
+	id: ID!
+	name: String!
+	email: String!
+	age: Int
+}
+```
+
 ```js
-const typeDefs = `
-    type Query {
-        users(query: String): [User!]!
-    }
-
-    type User {
-        id: ID!
-        name: String!
-        email: String!
-        age: Int
-    }  
-`;
-
 const resolvers = {
 	Query: {
 		users(parent, args, ctx, info) {
@@ -339,29 +339,29 @@ query {
 - We create a resolver function (similar to Query)
   - This will return our user when we query a Post
 
+```graphql
+type Query {
+	users(query: String): [User!]!
+	posts(query: String): [Post!]!
+}
+
+type User {
+	id: ID!
+	name: String!
+	email: String!
+	age: Int
+}
+
+type Post {
+	id: ID!
+	title: String!
+	body: String!
+	published: Boolean!
+	author: User!
+}
+```
+
 ```js
-const typeDefs = `
-    type Query {
-        users(query: String): [User!]!
-        posts(query: String): [Post!]!
-    }
-
-    type User {
-        id: ID!
-        name: String!
-        email: String!
-        age: Int
-    }
-
-    type Post {
-        id: ID!
-        title: String!
-        body: String!
-        published: Boolean!
-        author: User!
-    }
-`;
-
 const resolvers = {
 	Query: {
 		users(parent, args, ctx, info) {
@@ -424,31 +424,30 @@ query {
 - Doing an array filter instead of an array find
   - Instead of expecting one result, we expect 1 to many
 
+```graphql
+type Query {
+	users(query: String): [User!]!
+	posts(query: String): [Post!]!
+}
+
+type User {
+	id: ID!
+	name: String!
+	email: String!
+	age: Int
+	posts: [Post!]!
+}
+
+type Post {
+	id: ID!
+	title: String!
+	body: String!
+	published: Boolean!
+	author: User!
+}
+```
+
 ```js
-// Type definitions (schema)
-const typeDefs = `
-    type Query {
-        users(query: String): [User!]!
-        posts(query: String): [Post!]!
-    }
-
-    type User {
-        id: ID!
-        name: String!
-        email: String!
-        age: Int
-        posts: [Post!]!
-    }
-
-    type Post {
-        id: ID!
-        title: String!
-        body: String!
-        published: Boolean!
-        author: User!
-    }
-`;
-
 const resolvers = {
 	Query: {
 		users(parent, args, ctx, info) {
@@ -502,74 +501,7 @@ query {
 }
 ```
 
-# Mutations (Insert, Delete, Update)
-
-1. In order to create data, we need a package to generate ids
-
-   - [uuid](https://www.npmjs.com/package/uuid)
-
-   ```
-   npm install uuid
-   ```
-
-1. In general, mutations work similarly to query in design and function
-
-## Insert
-
-```js
-const typeDefs = `
-    type Mutation {
-        createUser(name: String!, email: String!, age: Int): User!
-    }
-
-    type User {
-        id: ID!
-        name: String!
-        email: String!
-        age: Int
-        posts: [Post!]!
-        comments: [Comment!]!
-    }
-`;
-
-const resolvers = {
-	Mutation: {
-		createUser(parent, args, ctc, info) {
-			const emailTaken = users.some((user) => {
-				return user.email === args.email;
-			});
-
-			if (emailTaken) {
-				throw new Error('Email taken');
-			}
-
-			const user = {
-				id: uuidv4(),
-				name: args.name,
-				email: args.email,
-				age: args.age,
-			};
-
-			users.push(user);
-
-			return user;
-		},
-	},
-};
-```
-
-```graphql
-mutation {
-	createUser(name: "Gary", email: "test@test.com") {
-		id
-		name
-		email
-		age
-	}
-}
-```
-
-### Object Spread Operator
+## Object Spread Operator
 
 1. We will be using a module for this
    - [babel-plugin-transform-object-rest-spread](https://www.npmjs.com/package/babel-plugin-transform-object-rest-spread)
@@ -629,3 +561,177 @@ mutation {
    	age: Int
    }
    ```
+
+# Mutations (Insert, Delete, Update)
+
+1. In order to create data, we need a package to generate ids
+
+   - [uuid](https://www.npmjs.com/package/uuid)
+
+   ```
+   npm install uuid
+   ```
+
+1. In general, mutations work similarly to query in design and function
+
+## Insert
+
+```graphql
+type Mutation {
+	createUser(name: String!, email: String!, age: Int): User!
+}
+
+type User {
+	id: ID!
+	name: String!
+	email: String!
+	age: Int
+	posts: [Post!]!
+	comments: [Comment!]!
+}
+```
+
+```js
+const resolvers = {
+	Mutation: {
+		createUser(parent, args, ctc, info) {
+			const emailTaken = users.some((user) => {
+				return user.email === args.email;
+			});
+
+			if (emailTaken) {
+				throw new Error('Email taken');
+			}
+
+			const user = {
+				id: uuidv4(),
+				name: args.name,
+				email: args.email,
+				age: args.age,
+			};
+
+			users.push(user);
+
+			return user;
+		},
+	},
+};
+```
+
+```graphql
+mutation {
+	createUser(name: "Gary", email: "test@test.com") {
+		id
+		name
+		email
+		age
+	}
+}
+```
+
+## Delete
+
+```graphql
+type Mutation {
+	deleteUser(id: ID!): User!
+}
+
+type User {
+	id: ID!
+	name: String!
+	email: String!
+	age: Int
+	posts: [Post!]!
+	comments: [Comment!]!
+}
+```
+
+```js
+const resolvers = {
+	Mutation: {
+		deleteUser(parent, args, { db }, info) {
+			const userIndex = db.users.findIndex((user) => user.id === args.id);
+
+			if (userIndex === -1) {
+				throw new Error('User not found');
+			}
+
+			const deletedUsers = db.users.splice(userIndex, 1);
+
+			db.posts = db.posts.filter((post) => {
+				const match = post.author === args.id;
+
+				if (match) {
+					db.comments = comments.filter((comment) => comment.post !== post.id);
+				}
+
+				return !match;
+			});
+
+			db.comments = db.comments.filter((comment) => comment.author !== args.id);
+
+			return deletedUsers[0];
+		},
+	},
+};
+```
+
+## Update
+
+```graphql
+type Mutation {
+	updateUser(id: ID!, data: UpdateUserInput): User!
+}
+
+type User {
+	id: ID!
+	name: String!
+	email: String!
+	age: Int
+	posts: [Post!]!
+	comments: [Comment!]!
+}
+```
+
+```js
+const resolvers = {
+	Mutation: {
+		updateUser(parent, args, { db }, info) {
+			const { id, data } = args;
+			const user = db.users.find((user) => user.id === id);
+
+			if (!user) {
+				throw new Error('User not found');
+			}
+
+			if (typeof data.email === 'string') {
+				const emailTaken = db.users.some((user) => user.email === data.email);
+
+				if (emailTaken) {
+					throw new Error('Email taken');
+				}
+
+				user.email = data.email;
+			}
+
+			if (typeof data.name === 'string') {
+				user.name = data.name;
+			}
+
+			if (typeof data.age !== 'undefined') {
+				user.age = data.age;
+			}
+
+			return user;
+		},
+	},
+};
+```
+
+# GraphQL Subscriptions
+
+- Client subscribes to data changes on server
+- Uses websockets in the background
+  - Open connection b/t client and server
+  - 'real-time' application
+- Query is a one-time fetch
