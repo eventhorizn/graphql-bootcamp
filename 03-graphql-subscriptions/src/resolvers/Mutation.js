@@ -70,7 +70,7 @@ const Mutation = {
 
 		return user;
 	},
-	createPost(parent, args, { db }, info) {
+	createPost(parent, args, { db, pubsub }, info) {
 		const userExists = db.users.some((user) => {
 			return user.id === args.input.author;
 		});
@@ -85,6 +85,10 @@ const Mutation = {
 		};
 
 		db.posts.push(post);
+
+		if (post.published) {
+			pubsub.publish('post', { post });
+		}
 
 		return post;
 	},
