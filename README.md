@@ -735,3 +735,51 @@ const resolvers = {
   - Open connection b/t client and server
   - 'real-time' application
 - Query is a one-time fetch
+- We will be using a package that graphql-yoga
+  - graphql-subscriptions
+
+## Setup
+
+```graphql
+type Subscription {
+	count: Int!
+}
+```
+
+```js
+import { GraphQLServer, PubSub } from 'graphql-yoga';
+import Subscription from './resolvers/Subscription';
+
+const pubsub = new PubSub();
+
+const server = new GraphQLServer({
+	typeDefs: './src/schema.graphql',
+	resolvers: {
+		Subscription,
+	},
+	context: {
+		pubsub,
+	},
+});
+```
+
+```js
+const Subscription = {
+	count: {
+		subscribe(parent, args, { pubsub }, info) {
+			let count = 0;
+
+			setInterval(() => {
+				count++;
+				pubsub.publish('count', {
+					count,
+				});
+			}, 1000);
+
+			return pubsub.asyncIterator('count');
+		},
+	},
+};
+
+export { Subscription as default };
+```
