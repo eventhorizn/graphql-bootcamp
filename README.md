@@ -783,3 +783,39 @@ const Subscription = {
 
 export { Subscription as default };
 ```
+
+## Enums
+
+```graphql
+enum MutationType {
+	CREATED
+	UPDATED
+	DELETED
+}
+
+type PostSubscriptionPayload {
+	mutation: MutationType!
+	data: Post!
+}
+
+type CommentSubscriptionPayload {
+	mutation: MutationType!
+	data: Comment!
+}
+```
+
+```js
+if (post.published) {
+	pubsub.publish('post', {
+		post: {
+			mutation: 'CREATED',
+			data: post,
+		},
+	});
+}
+```
+
+- So you still have to use strings on the js side
+- But if you mispell, graphQL will throw an error
+
+# Database with Prisma v1
