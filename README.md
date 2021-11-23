@@ -819,3 +819,35 @@ if (post.published) {
 - But if you mispell, graphQL will throw an error
 
 # Database with Prisma v1
+
+1. Prisma is a GraphQL ORM
+1. Prisma supports multiple databases
+   - Mongo, MySQL, etc
+1. So our backend can read from the db using GraphQL
+   - Keeps our communication b/t the front end and db the same
+   - Server becomes much less important
+   - Almost as if the client is directly connected to db
+1. Prisma uses the same command from client to server to the db
+
+![](/images/prisma.png)
+
+## Postgres Through Heroku
+
+1. [Heroku](https://www.heroku.com/) lets you create apps that will host our database
+1. Create app `hake-prisma-dev-server`
+	- Go to the overview tab
+1. Search for `Heroku Postgres` add-on
+	- Make sure you use the free version!
+1. Go to the settings to figure out how to connect to the db
+
+### PGAdmin
+
+1. This is a gui we will install to manage our database
+1. [Link](https://www.pgadmin.org/download/pgadmin-4-windows/)
+1. The server we are using has a ton of databases
+	- It's a pain to find ours
+
+### Docker
+
+1. We will be using docker to host and run Prisma
+1. [Link](https://www.docker.com/get-started)
