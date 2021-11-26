@@ -887,6 +887,15 @@ if (post.published) {
 1. The big benefit of Prisma, is that you just create the base table (Users), and prisma creates all the subscriptions for you
 	- Add, Delete, Update, Select
 
+## Hooking up Node to Prisma
+
+1. At this point, prisma is doing crud operations to the postgres database
+1. First package [prisma-binding](https://github.com/prisma-labs/prisma-binding)
+	- **Only works with Prisma1**
+	```bash
+	npm install prisma-binding
+	```
+
 # TODO
 
 1. Migrate from prisma v1 to v3
