@@ -829,7 +829,7 @@ if (post.published) {
    - Almost as if the client is directly connected to db
 1. Prisma uses the same command from client to server to the db
 1. The biggest lift with Prisma, is that it creates all the things we had to manually create before
-	- Subscriptions, mutations, crud, etc
+   - Subscriptions, mutations, crud, etc
 
 ![](/images/prisma.png)
 
@@ -837,9 +837,9 @@ if (post.published) {
 
 1. [Heroku](https://www.heroku.com/) lets you create apps that will host our database
 1. Create app `hake-prisma-dev-server`
-	- Go to the overview tab
+   - Go to the overview tab
 1. Search for `Heroku Postgres` add-on
-	- Make sure you use the free version!
+   - Make sure you use the free version!
 1. Go to the settings to figure out how to connect to the db
 
 ### PGAdmin
@@ -847,7 +847,7 @@ if (post.published) {
 1. This is a gui we will install to manage our database
 1. [Link](https://www.pgadmin.org/download/pgadmin-4-windows/)
 1. The server we are using has a ton of databases
-	- It's a pain to find ours
+   - It's a pain to find ours
 
 ### Docker
 
@@ -858,59 +858,158 @@ if (post.published) {
 
 1. [Officical Website](https://www.prisma.io/)
 1. Install
-	```bash
-	npm install -g prisma1
-	```
-	- Prisma is on v3, but there was a big philosophical switch b/t v1 and v2
-	- We are going to use v1 for now, so we have to specifically install that version
+   ```bash
+   npm install -g prisma1
+   ```
+   - Prisma is on v3, but there was a big philosophical switch b/t v1 and v2
+   - We are going to use v1 for now, so we have to specifically install that version
 1. Prisma also has a vscode extension
 1. Prisma init
-	```bash
-	prisma1 init prisma
-	```
-	- Supposed to create a folder with 3 files
-		- datamodel.graphql (datamodel files)
-		- docker-compose.yml (docker compose config)
-		- prisma.yml (prisma config for db)
+   ```bash
+   prisma1 init prisma
+   ```
+   - Supposed to create a folder with 3 files
+     - datamodel.graphql (datamodel files)
+     - docker-compose.yml (docker compose config)
+     - prisma.yml (prisma config for db)
 1. `datamodel.graphql` is the most important of the 3
-	- Where we define our db schema
+   - Where we define our db schema
 1. Commands
-	- From within the prisma folder
-	```bash
-	docker-compose up -d
-	```
-	- Once the docker image is running
-	```bash
-	prisma deploy
-	```
-	- Pushes most recent changes to live db
+   - From within the prisma folder
+   ```bash
+   docker-compose up -d
+   ```
+   - Once the docker image is running
+   ```bash
+   prisma deploy
+   ```
+   - Pushes most recent changes to live db
 1. The big benefit of Prisma, is that you just create the base table (Users), and prisma creates all the subscriptions for you
-	- Add, Delete, Update, Select
+   - Add, Delete, Update, Select
 
 ## Hooking up Node to Prisma
 
 1. At this point, prisma is doing crud operations to the postgres database
 1. First package [prisma-binding](https://github.com/prisma-labs/prisma-binding)
-	- **Only works with Prisma1**
-	```bash
-	npm install prisma-binding
-	```
+   - **Only works with Prisma1**
+   ```bash
+   npm install prisma-binding
+   ```
 1. [GraphQL CLI](https://www.graphql-cli.com/introduction/)
-	- Fetching schema from prisma
+   - Fetching schema from prisma
 1. We are supposed to use graphql cli to generate our subscriptions
-	- The course's stuff, didn't work, but there was a workaround
-	- Install a separate package
-	```bash
-    npm install -g get-graphql-schema
-	```
-	- Update the package.config script:
-	```config
-	npm install -g get-graphql-schema
-	```
-	- Use the command
-	```bash
-	npm run get-schema
-	```
+   - The course's stuff, didn't work, but there was a workaround
+   - Install a separate package
+   ```bash
+   npm install -g get-graphql-schema
+   ```
+   - Update the package.config script:
+   ```config
+   npm install -g get-graphql-schema
+   ```
+   - Use the command
+   ```bash
+   npm run get-schema
+   ```
+
+## Prisma Bindings
+
+### Query
+
+```js
+import { Prisma } from 'prisma-binding';
+
+const prisma = new Prisma({
+	typeDefs: 'src/generated/prisma.graphql',
+	endpoint: 'http://localhost:4466',
+});
+
+prisma.query.users(null, '{ id name posts { id title } }').then((data) => {
+	console.log(JSON.stringify(data, undefined, 2));
+});
+
+prisma.query.comments(null, '{ id text author { id name } }').then((data) => {
+	console.log(JSON.stringify(data, undefined, 2));
+});
+```
+
+### Mutations
+
+Creating a post:
+
+```js
+prisma.mutation
+	.createPost(
+		{
+			data: {
+				title: 'GraphQL 101',
+				body: '',
+				published: false,
+				author: {
+					connect: {
+						id: 'ckwgtc90j00eq0995aii2ggm1',
+					},
+				},
+			},
+		},
+		'{ id title body published }'
+	)
+	.then((data) => {
+		console.log(data);
+	});
+```
+
+With promise chaining, we can query after a mutation:
+
+```js
+prisma.mutation
+	.createPost(
+		{
+			data: {
+				title: 'GraphQL 101',
+				body: '',
+				published: false,
+				author: {
+					connect: {
+						id: 'ckwgtc90j00eq0995aii2ggm1',
+					},
+				},
+			},
+		},
+		'{ id title body published }'
+	)
+	.then((data) => {
+		console.log(data);
+		return prisma.query.users(null, '{ id name posts { id title } }');
+	})
+	.then((data) => {
+		console.log(JSON.stringify(data, undefined, 2));
+	});
+```
+
+Updating a post:
+
+```js
+prisma.mutation
+	.updatePost(
+		{
+			where: {
+				id: 'ckwh036f100jl09954vl5rhy7',
+			},
+			data: {
+				body: 'This is how to get started with Graphql...',
+				published: true,
+			},
+		},
+		'{ id }'
+	)
+	.then((data) => {
+		return prisma.query.posts(null, '{ id title body published }');
+	})
+	.then((data) => {
+		console.log(data);
+	});
+```
 
 # TODO
 
