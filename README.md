@@ -828,6 +828,8 @@ if (post.published) {
    - Server becomes much less important
    - Almost as if the client is directly connected to db
 1. Prisma uses the same command from client to server to the db
+1. The biggest lift with Prisma, is that it creates all the things we had to manually create before
+	- Subscriptions, mutations, crud, etc
 
 ![](/images/prisma.png)
 
@@ -862,6 +864,28 @@ if (post.published) {
 	- Prisma is on v3, but there was a big philosophical switch b/t v1 and v2
 	- We are going to use v1 for now, so we have to specifically install that version
 1. Prisma also has a vscode extension
+1. Prisma init
+	```bash
+	prisma1 init prisma
+	```
+	- Supposed to create a folder with 3 files
+		- datamodel.graphql (datamodel files)
+		- docker-compose.yml (docker compose config)
+		- prisma.yml (prisma config for db)
+1. `datamodel.graphql` is the most important of the 3
+	- Where we define our db schema
+1. Commands
+	- From within the prisma folder
+	```bash
+	docker-compose up -d
+	```
+	- Once the docker image is running
+	```bash
+	prisma deploy
+	```
+	- Pushes most recent changes to live db
+1. The big benefit of Prisma, is that you just create the base table (Users), and prisma creates all the subscriptions for you
+	- Add, Delete, Update, Select
 
 # TODO
 
