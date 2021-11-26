@@ -851,3 +851,18 @@ if (post.published) {
 
 1. We will be using docker to host and run Prisma
 1. [Link](https://www.docker.com/get-started)
+
+## Prisma
+
+1. [Officical Website](https://www.prisma.io/)
+1. Install
+	```bash
+	npm install -g prisma1
+	```
+	- Prisma is on v3, but there was a big philosophical switch b/t v1 and v2
+	- We are going to use v1 for now, so we have to specifically install that version
+1. Prisma also has a vscode extension
+
+# TODO
+
+1. Migrate from prisma v1 to v3
