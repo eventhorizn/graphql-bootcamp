@@ -895,6 +895,22 @@ if (post.published) {
 	```bash
 	npm install prisma-binding
 	```
+1. [GraphQL CLI](https://www.graphql-cli.com/introduction/)
+	- Fetching schema from prisma
+1. We are supposed to use graphql cli to generate our subscriptions
+	- The course's stuff, didn't work, but there was a workaround
+	- Install a separate package
+	```bash
+    npm install -g get-graphql-schema
+	```
+	- Update the package.config script:
+	```config
+	npm install -g get-graphql-schema
+	```
+	- Use the command
+	```bash
+	npm run get-schema
+	```
 
 # TODO
 
