@@ -14,12 +14,15 @@
 		"babel-cli": "^6.26.0",
 		"babel-plugin-transform-object-rest-spread": "^6.26.0",
 		"babel-preset-env": "^1.7.0",
-		"graphql-cli": "^4.1.0",
-		"graphql-yoga": "^1.18.3",
-		"prisma-binding": "^2.3.16",
-		"uuid": "^8.3.2"
+		"graphql-cli": "^2.16.4",
+		"graphql-yoga": "^1.14.10",
+		"prisma-binding": "^2.1.1",
+		"uuid": "^3.3.2"
 	},
 	"devDependencies": {
-		"nodemon": "^2.0.12"
+		"nodemon": "^1.17.5"
+	},
+	"resolutions": {
+		"graphql": "^14.1.0"
 	}
 }

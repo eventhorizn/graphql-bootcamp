@@ -830,6 +830,8 @@ if (post.published) {
 1. Prisma uses the same command from client to server to the db
 1. The biggest lift with Prisma, is that it creates all the things we had to manually create before
    - Subscriptions, mutations, crud, etc
+1. Prisma on docker will have it's own playground (separate from our client based one)
+   - localhost:4466 (prisma) vs localhost:4000 (project/client)
 
 ![](/images/prisma.png)
 
