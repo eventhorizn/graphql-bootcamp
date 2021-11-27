@@ -65,9 +65,28 @@ const prisma = new Prisma({
 // 		console.log(data);
 // 	});
 
+// IF EXISTS
+
+// prisma.exists
+// 	.Comment({
+// 		id: 'ckwgtfseo00h40995i0r5ntdw',
+// 		author: {
+// 			id: 'ckwgtc90j00eq0995aii2ggm1',
+// 		},
+// 	})
+// 	.then((exists) => {
+// 		console.log(exists);
+// 	});
+
 // ASYNC/AWAIT
 
 const createPostForUser = async (authorId, data) => {
+	const userExists = await prisma.exists.User({ id: authorId });
+
+	if (!userExists) {
+		throw new Error('User not found');
+	}
+
 	const post = await prisma.mutation.createPost(
 		{
 			data: {
@@ -79,30 +98,33 @@ const createPostForUser = async (authorId, data) => {
 				},
 			},
 		},
-		'{ id }'
+		'{ author { id name email posts { id title published } } }'
 	);
 
-	const user = await prisma.query.user(
-		{
-			where: {
-				id: authorId,
-			},
-		},
-		'{ id name email posts { id title published } }'
-	);
-
-	return user;
+	return post.author;
 };
 
-// createPostForUser('ckwh11j6600kj0995jqewc3yf', {
+// createPostForUser('ckwgsqhtv00700995osivaug0', {
 // 	title: 'Great books to read',
-// 	body: 'The War of Art',
+// 	body: 'The Lord of the Rings',
 // 	published: true,
-// }).then((user) => {
-// 	console.log(JSON.stringify(user, undefined, 2));
-// });
+// })
+// 	.then((user) => {
+// 		console.log(JSON.stringify(user, undefined, 2));
+// 	})
+// 	.catch((err) => {
+// 		console.log(err.message);
+// 	});
 
 const updatePostForUser = async (postId, data) => {
+	const postExists = await prisma.exists.Post({
+		id: postId,
+	});
+
+	if (!postExists) {
+		throw new Error('Post not found');
+	}
+
 	const post = await prisma.mutation.updatePost(
 		{
 			where: {
@@ -110,23 +132,16 @@ const updatePostForUser = async (postId, data) => {
 			},
 			data,
 		},
-		'{ author { id } }'
+		'{ author { id name email posts { id title published } } }'
 	);
 
-	const user = await prisma.query.user(
-		{
-			where: {
-				id: post.author.id,
-			},
-		},
-		'{ id name email posts { id title published } }'
-	);
-
-	return user;
+	return post.author;
 };
 
-// updatePostForUser('ckwh149qc00kp0995r04ln44d', { published: false }).then(
-// 	(user) => {
+// updatePostForUser('abx123', { published: false })
+// 	.then((user) => {
 // 		console.log(JSON.stringify(user, undefined, 2));
-// 	}
-// );
+// 	})
+// 	.catch((err) => {
+// 		console.log(err.message);
+// 	});

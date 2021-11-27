@@ -1061,6 +1061,38 @@ createPostForUser('ckwh11j6600kj0995jqewc3yf', {
 });
 ```
 
+### Checking if Data Exists
+
+Allows us to confirm an item exists before updating
+
+```js
+prisma.exists
+	.Comment({
+		id: 'ckwgtfseo00h40995i0r5ntdw',
+		author: {
+			id: 'ckwgtc90j00eq0995aii2ggm1',
+		},
+	})
+	.then((exists) => {
+		console.log(exists);
+	});
+```
+
+### Type Relationships
+
+This is how we define delete behavior for related columns
+
+```graphql
+type Post {
+	id: ID! @unique
+	title: String!
+	body: String!
+	published: Boolean!
+	author: User! @relation(name: "PostToUser", onDelete: SET_NULL)
+	comments: [Comment!]! @relation(name: "CommentToPost", onDelete: CASCADE)
+}
+```
+
 # TODO
 
 1. Migrate from prisma v1 to v3
