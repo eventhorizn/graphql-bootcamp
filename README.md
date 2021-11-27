@@ -1097,6 +1097,52 @@ type Post {
 }
 ```
 
+# Integrating Prisma to GraphQL Queries
+
+1. Right now, the project is separated by prisma and the client side
+1. We can see this by the different environments we are running the playground on
+   - localhost:4466 is the prisma direct playground
+   - localhost:4000 is the client based playground
+1. We set up a fake, local db for the client to use, and for us to develop our graphql resolvers
+1. What we want to do is to have the client use prisma to do all resolver based tasks
+1. This is all very similar to what we did above
+
+## Query
+
+```js
+users(parent, args, { prisma }, info) {
+	const opArgs = {};
+
+	if (args.query) {
+		opArgs.where = {
+			OR: [
+				{
+					name_contains: args.query,
+				},
+				{
+					email_contains: args.query,
+				},
+			],
+		};
+	}
+
+	return prisma.query.users(opArgs, info);
+},
+```
+
+1. We are also integrating a query parameter so we can filter results
+1. Graphql passes the query object, the client does the filtering
+
+```graphql
+query {
+	users(query: "e@example.com") {
+		id
+		name
+		email
+	}
+}
+```
+
 # TODO
 
 1. Migrate from prisma v1 to v3
