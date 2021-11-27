@@ -884,6 +884,8 @@ if (post.published) {
    prisma deploy
    ```
    - Pushes most recent changes to live db
+1. Make sure you create a .env file for your secret vars
+   - Located within the prisma folder
 1. The big benefit of Prisma, is that you just create the base table (Users), and prisma creates all the subscriptions for you
    - Add, Delete, Update, Select
 
