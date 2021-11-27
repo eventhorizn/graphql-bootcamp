@@ -914,7 +914,12 @@ if (post.published) {
 
 ## Prisma Bindings
 
-### Query
+The playground that is auto-launched with prisma (in docker) is helpful to develop the below code blocks
+
+- It will give you an idea of the available prisma functions
+- It will show you how those functions operate (inputs)
+
+Include and instantiate:
 
 ```js
 import { Prisma } from 'prisma-binding';
@@ -923,7 +928,11 @@ const prisma = new Prisma({
 	typeDefs: 'src/generated/prisma.graphql',
 	endpoint: 'http://localhost:4466',
 });
+```
 
+### Query
+
+```js
 prisma.query.users(null, '{ id name posts { id title } }').then((data) => {
 	console.log(JSON.stringify(data, undefined, 2));
 });
@@ -1009,6 +1018,47 @@ prisma.mutation
 	.then((data) => {
 		console.log(data);
 	});
+```
+
+### Async/Await
+
+The idea is that functionally everything works the same above (with promises), but the syntax is cleaner w/ async/await
+
+```js
+const createPostForUser = async (authorId, data) => {
+	const post = await prisma.mutation.createPost(
+		{
+			data: {
+				...data,
+				author: {
+					connect: {
+						id: authorId,
+					},
+				},
+			},
+		},
+		'{ id }'
+	);
+
+	const user = await prisma.query.user(
+		{
+			where: {
+				id: authorId,
+			},
+		},
+		'{ id name email posts { id title published } }'
+	);
+
+	return user;
+};
+
+createPostForUser('ckwh11j6600kj0995jqewc3yf', {
+	title: 'Great books to read',
+	body: 'The War of Art',
+	published: true,
+}).then((user) => {
+	console.log(JSON.stringify(user, undefined, 2));
+});
 ```
 
 # TODO
