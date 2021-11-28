@@ -1184,6 +1184,9 @@ query {
    - Once we add the password to the users, we need to refresh everything
 1. Hashing a password
    - [bcryptjs](https://www.npmjs.com/package/bcryptjs)
+1. Auth Tokens with JWT
+   - [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)
+   - [What's a JWT made of](https://jwt.io/)
 
 # TODO
 
