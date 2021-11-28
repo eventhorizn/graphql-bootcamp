@@ -1143,6 +1143,38 @@ query {
 
 1. Mutations work similarly to the query above
 
+## Locking Prisma to Outside World
+
+1. The idea is that we don't want any user to be able to access the prisma playground (localhost:4466)
+1. So we need to password protect it
+1. Our node server will have the secret to access prisma, but only it
+1. The way to lock it down is rather simple
+   - Add secret key in prisma.yml
+   ```yml
+   endpoint: http://localhost:4466
+   datamodel: datamodel.graphql
+   secret: thisismysupersecrettext
+   ```
+   - Add the same in prisma.js
+   ```js
+   const prisma = new Prisma({
+   	typeDefs: 'src/generated/prisma.graphql',
+   	endpoint: 'http://localhost:4466',
+   	secret: 'thisismysupersecrettext',
+   });
+   ```
+1. How do we use the prisma playground if we want?
+   - We set up a token. Run the below command in prisma folder
+   ```
+   prisma1 token
+   ```
+   - In the playground add an http header
+   ```json
+   {
+   	"Authorization": "Bearer TOKEN"
+   }
+   ```
+
 # TODO
 
 1. Migrate from prisma v1 to v3
