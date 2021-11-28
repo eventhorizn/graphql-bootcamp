@@ -1175,6 +1175,16 @@ query {
    }
    ```
 
+## Passwords and Auth Tokens
+
+1. Delete the database shortcut
+   ```bash
+   prisma1 delete
+   ```
+   - Once we add the password to the users, we need to refresh everything
+1. Hashing a password
+   - [bcryptjs](https://www.npmjs.com/package/bcryptjs)
+
 # TODO
 
 1. Migrate from prisma v1 to v3
