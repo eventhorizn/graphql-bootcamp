@@ -1188,6 +1188,28 @@ query {
    - [jsonwebtoken](https://www.npmjs.com/package/jsonwebtoken)
    - [What's a JWT made of](https://jwt.io/)
 
+# GraphQL Fragments
+
+1. One of the annoyances so far w/ graphql is that we have to list the same fields for a type over and over
+1. Fragments allow us to create a re-usable piece of 'code' to solve that problem
+
+```graphql
+query {
+	users {
+		...userFields
+		posts {
+			id
+		}
+	}
+}
+
+fragment userFields on User {
+	id
+	name
+	email
+}
+```
+
 # TODO
 
 1. Migrate from prisma v1 to v3
