@@ -5,6 +5,7 @@ const Mutation = {
 	async createUser(parent, args, { prisma }, info) {
 		// Prisma actually will throw an exception
 		// This just gives us a 'nicer' error
+
 		// const emailTaken = await prisma.exists.User({ email: args.data.email });
 
 		// if (emailTaken) {
@@ -22,6 +23,28 @@ const Mutation = {
 				password,
 			},
 		});
+
+		return {
+			user,
+			token: jwt.sign({ userId: user.id }, 'thisisasecret'),
+		};
+	},
+	async login(parent, args, { prisma }, info) {
+		const user = await prisma.query.user({
+			where: {
+				email: args.data.email,
+			},
+		});
+
+		if (!user) {
+			throw new Error('Unable to login');
+		}
+
+		const isMatch = await bcrypt.compare(args.data.password, user.password);
+
+		if (!isMatch) {
+			throw new Error('Unable to login');
+		}
 
 		return {
 			user,
