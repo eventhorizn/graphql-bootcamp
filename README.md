@@ -1107,8 +1107,6 @@ type Post {
 1. What we want to do is to have the client use prisma to do all resolver based tasks
 1. This is all very similar to what we did above
 
-## Query
-
 ```js
 users(parent, args, { prisma }, info) {
 	const opArgs = {};
@@ -1142,6 +1140,8 @@ query {
 	}
 }
 ```
+
+1. Mutations work similarly to the query above
 
 # TODO
 
