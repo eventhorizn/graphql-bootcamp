@@ -1210,6 +1210,26 @@ fragment userFields on User {
 }
 ```
 
+1. On the js side, we will build our fragments in strings:
+
+```js
+const User = {
+	posts: {
+		fragment: 'fragment userId on User { id }',
+		resolve(parent, args, { prisma }, info) {
+			return prisma.query.posts({
+				where: {
+					published: true,
+					author: {
+						id: parent.id,
+					},
+				},
+			});
+		},
+	},
+};
+```
+
 # TODO
 
 1. Migrate from prisma v1 to v3
