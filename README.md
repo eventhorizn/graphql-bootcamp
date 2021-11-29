@@ -1260,6 +1260,48 @@ We will use 2 services to do all the above
 
 ![](./images/prod-prisma-server.png)
 
+## Deploying Prisma
+
+1. Initially, we are just deploying to our local server
+1. We want to create a dynamic way of deploying either to dev or prod
+1. We create a config file w/ dev and prod.env files
+1. Run the below command for dev deploy
+   ```bash
+   prisma1 deploy -e ../config/dev.env
+   ```
+
+### Production Deploy
+
+1. Login to prisma cloud
+   ```bash
+   prisma1 login
+   ```
+   - Click authenticate
+1. Run the below
+   ```bash
+   prisma1 deploy -e ../config/dev.env
+   ```
+   - The prod.env file is empty, so it will prompt you for values
+   - Deploy to existing server
+   - Choose name for service `gary-hake-blog-app`
+   - Choose name for stage `prod`
+1. The process will overwrite the value in prisma.yml
+   - Copy the url it generates into the prod.env file
+
+## Deploying Node
+
+1. Install heroku cli
+   ```npm
+   npm install -g heroku
+   ```
+1. Login to heroku
+   ```bash
+   heroku login
+   ```
+1. Next we setup node to be more dynamic w/ dev vs prod
+   - Have index and prisma looking at dev and prod.env files
+   - Updated our start scripts w/ a start vs dev implementation
+
 # TODO
 
 1. Migrate from prisma v1 to v3
