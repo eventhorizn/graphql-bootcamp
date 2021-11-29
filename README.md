@@ -1230,6 +1230,36 @@ const User = {
 };
 ```
 
+# Production Deployment
+
+There are 3 pieces that are required to get this running in 'production'
+
+1. Production Database
+1. Prisma Docker Container
+1. Host our Node.js application
+
+We will use 2 services to do all the above
+
+1. Heroku will host
+1. Prisma Cloud will orchestrate it all
+
+## Prisma Cloud
+
+1. Only works with Prisma1
+   - TODO when we switch to Prisma 2/3 is to switch to their other service
+1. [Link](https://app.prisma.io/)
+
+### Add New Prisma Server
+
+1. Name and description on the Add server page
+1. Creating a new database on Heroku
+   - Need to connect accounts
+1. Stay with free tier
+1. Create DB
+1. Now Create a Server on Heroku
+
+![](./images/prod-prisma-server.png)
+
 # TODO
 
 1. Migrate from prisma v1 to v3
