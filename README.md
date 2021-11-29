@@ -1301,6 +1301,19 @@ We will use 2 services to do all the above
 1. Next we setup node to be more dynamic w/ dev vs prod
    - Have index and prisma looking at dev and prod.env files
    - Updated our start scripts w/ a start vs dev implementation
+1. I copied the production version of the app to a new repo for deployment
+1. Create the app
+   ```bash
+   heroku create
+   ```
+1. Configure heroku app
+   ```bash
+   heroku config:set PRISMA_ENDPOINT=https://gary-hake-blog-app-78e794293e.herokuapp.com/gary-hake-blog-app/prod
+   ```
+1. Deploy app
+   ```bash
+   git push heroku main
+   ```
 
 # TODO
 
