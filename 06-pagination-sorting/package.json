@@ -1,5 +1,5 @@
 {
-	"name": "05-prisma-auth",
+	"name": "06-pagination-sorting",
 	"version": "1.0.0",
 	"description": "",
 	"main": "index.js",
